@@ -1,0 +1,68 @@
+name: Pubblica le informative
+
+# Genera il sito (un sottosito per ogni cartella di apps/) e lo pubblica su
+# GitHub Pages. Si avvia a ogni modifica su main e a mano: Actions >
+# "Pubblica le informative" > Run workflow (anche dall'app GitHub sul telefono).
+# Sulle PR genera il sito senza pubblicarlo, per vedere se la build passa.
+#
+# Prima volta: Settings > Pages > Build and deployment > Source: "GitHub Actions"
+# e le variabili PRIVACY_* descritte nel README.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Dipendenze
+        run: npm ci --ignore-scripts
+
+      - name: Audit delle dipendenze
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Genera il sito
+        env:
+          # Tutte le variabili del repository: i segnaposto {{NOME}} dei testi
+          # usano PRIVACY_NOME. Se ne manca una, la build fallisce.
+          VARS_JSON: ${{ toJSON(vars) }}
+        run: node scripts/build.mjs
+
+      - name: Prepara la pubblicazione
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+          retention-days: 1
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Pubblica su GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,17 @@
+{
+  "name": "cthv9-dev-privacy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Informative privacy delle app, pubblicate come siti statici con GitHub Actions",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/build.mjs --preview"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "marked": "18.2.0"
+  }
+}
