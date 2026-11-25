@@ -30,12 +30,12 @@ A ogni modifica su `main` il workflow **Pubblica le informative** genera il sito
 
 | Variabile | Contenuto |
 |---|---|
-| `PRIVACY_TITOLARE` | Ragione sociale e sede del titolare del trattamento |
-| `PRIVACY_CONTATTO` | Email o PEC per le richieste sulla privacy |
+| `PRIVACY_EDITORE` | Nome di chi pubblica l'app (persona o società) |
+| `PRIVACY_CONTATTO` | Email per le domande sulla privacy (meglio una casella dedicata) |
 
-Il repository è pubblico: i dati del titolare **non vanno scritti nei file**. Stanno nelle variabili e compaiono solo nella pagina pubblicata, che per legge li deve mostrare.
+Il repository è pubblico: nome e contatto **non vanno scritti nei file**. Stanno nelle variabili e compaiono solo nella pagina pubblicata, che li deve mostrare.
 
-Un segnaposto `{{NOME}}` in un testo si sostituisce con la variabile `PRIVACY_NOME`. Se una variabile manca o è vuota, la build **fallisce** e non pubblica nulla, così non esce mai una pagina con i segnaposto in vista. Se un'app ha un titolare diverso, usa nomi propri, per esempio `{{ALTRAAPP_TITOLARE}}` con la variabile `PRIVACY_ALTRAAPP_TITOLARE`.
+Un segnaposto `{{NOME}}` in un testo si sostituisce con la variabile `PRIVACY_NOME`. Se una variabile manca o è vuota, la build **fallisce** e non pubblica nulla, così non esce mai una pagina con i segnaposto in vista. Se un'app ha un editore o un contatto diverso, usa nomi propri, per esempio `{{ALTRAAPP_EDITORE}}` con la variabile `PRIVACY_ALTRAAPP_EDITORE`.
 
 ## Aggiungere un'app
 
@@ -55,7 +55,7 @@ Servono Node 22 o successivo.
 ```bash
 npm ci
 npm run preview      # segnaposto lasciati in vista, solo per vedere la grafica
-PRIVACY_TITOLARE="…" PRIVACY_CONTATTO="…" npm run build   # come su Actions
+PRIVACY_EDITORE="…" PRIVACY_CONTATTO="…" npm run build   # come su Actions
 ```
 
 Il sito generato è in `_site/`.
